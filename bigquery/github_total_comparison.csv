@@ -1,0 +1,15 @@
+year,type,conditions,CreateEvent,PushEvent,All,Search
+2007,repos,includes forks,1,1,2,2
+2008,repos,includes forks,"1,595","3,282","11,740","30,605"
+2009,repos,includes forks,"5,588","13,570","36,010","150,808"
+2010,repos,includes forks,"17,241","41,056","93,942","310,601"
+2011,repos,includes forks,"64,544","155,215","285,461","844,419"
+2012,repos,includes forks,"1,759,790","1,462,638","2,325,059","2,198,902"
+2013,repos,includes forks,"3,841,979","2,957,234","4,655,144","4,969,181"
+2007,projects,excludes forks,1,1,1,1
+2008,projects,excludes forks,"1,508","3,123","10,497","22,881"
+2009,projects,excludes forks,"4,981","12,060","32,050","112,287"
+2010,projects,excludes forks,"14,237","35,653","80,677","215,568"
+2011,projects,excludes forks,"48,932","128,249","224,252","532,441"
+2012,projects,excludes forks,"1,678,312","1,115,186","1,873,021","1,268,403"
+2013,projects,excludes forks,"3,533,735","2,191,088","3,706,728","2,614,093"

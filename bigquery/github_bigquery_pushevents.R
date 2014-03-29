@@ -1,4 +1,5 @@
 require(ggplot2)
+require(scales)
 
 setwd("~/Dropbox/GA/project/bigquery")
 
@@ -20,11 +21,13 @@ pushevents_yd_total   <- aggregate(pushes_by_lang ~ year + day,
 pushevents_ym_total   <- aggregate(pushes_by_lang ~ year + month, 
                                    data=pushevents_ymd, FUN=sum)
 
-# create month category
-pushevents_ymd_total <- transform(pushevents_ymd_total, monthabb = month.abb[month])
+pushevents_ymd_total$yearnum = as.numeric(as.character(pushevents_ymd_total$year))
+pushevents_ymd_total$monthnum = as.numeric(as.character(pushevents_ymd_total$month))
+pushevents_ymd_total$daynum = as.numeric(as.character(pushevents_ymd_total$day))
+pushevents_ymd_total$monthday = pushevents_ymd_total$monthnum*10+pushevents_ymd_total$daynum
 
 # graph total counts by year-quarter
-ggplot(pushevents_yq_total, aes(quarter,pushes_by_lang,group=c(year),colour=year)) + 
+ggplot(pushevents_yq_total, aes(quarter,pushes_by_lang,group=year,colour=year)) + 
   geom_point() +
   geom_line() +
   xlab("Quarter") +
@@ -44,7 +47,7 @@ ggplot(pushevents_yq_total, aes(yearquarter,pushes_by_lang)) +
   scale_colour_discrete(name="Year")
 
 # graph total counts by year-month-day
-ggplot(pushevents_ymd_total, aes(as.numeric(day),pushes_by_lang,group=month,colour=monthabb)) + 
+ggplot(pushevents_ymd_total, aes(day,pushes_by_lang,group=month,colour=month)) + 
   geom_point() +
   geom_line() +
   facet_grid(year ~ .) +
@@ -52,17 +55,14 @@ ggplot(pushevents_ymd_total, aes(as.numeric(day),pushes_by_lang,group=month,colo
   ylab("Total") + 
   ggtitle("Total Push Events by Year-Month-Day of Week") +
   scale_y_continuous(labels=comma) + 
-  scale_x_continuous(breaks=1:7,
+  scale_x_discrete(breaks=1:7,
                      labels=c("Sun","Mon","Tues","Wed","Thu","Fri","Sat")) + 
   scale_colour_discrete(name="Month", 
-                        breaks=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
-
-pushevents_ymd_total$monthnum = as.numeric(pushevents_ymd_total$month)
-pushevents_ymd_total$daynum = as.numeric(pushevents_ymd_total$day)
-pushevents_ymd_total$monthday = pushevents_ymd_total$monthnum*10+pushevents_ymd_total$daynum
+                        breaks=c(1:12), 
+                        labels=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
 
 png('github_bigquery_pushevents_total_ymd.png')
-ggplot(subset(pushevents_ymd_total,year=2013), aes(monthday,pushes_by_lang,group=month,colour=monthabb)) + 
+ggplot(subset(pushevents_ymd_total,year=2013), aes(monthday,pushes_by_lang,group=month,colour=month)) + 
   geom_point() +
   geom_line() +
   facet_grid(year ~ .) +
@@ -84,7 +84,8 @@ ggplot(subset(pushevents_ymd_total,year=2013), aes(monthday,pushes_by_lang,group
                               "S","M","T","W","T","F","S",
                               "S","M","T","W","T","F","S")) + 
   scale_colour_discrete(name="Month", 
-                      breaks=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+                        breaks=(1:12),
+                        labels=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
 dev.off()
 
 tapply(pushevents_ymd_total$pushes_by_lang, pushevents_ymd_total$day, summary)

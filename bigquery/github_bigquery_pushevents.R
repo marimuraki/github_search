@@ -8,6 +8,7 @@ pushevents_yq   <- subset(pushevents_yq, year==2012 | year== 2013)
 pushevents_ymd  <- read.csv("pushevents_by_yearmonthday.csv") 
 pushevents_ymd  <- subset(pushevents_ymd, year==2012 | year== 2013)
 pushevents_stats  <- read.csv("pushevents_stats_2013.csv")
+pushevents_random_sample  <- read.csv("pushevents_daily_random_sample.csv")
 
 # aggregate across languages
 pushevents_yq_total   <- aggregate(pushes_by_lang ~ year + quarter, 
@@ -56,6 +57,41 @@ ggplot(pushevents_ymd_total, aes(as.numeric(day),pushes_by_lang,group=month,colo
   scale_colour_discrete(name="Month", 
                         breaks=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
 
+pushevents_ymd_total$monthnum = as.numeric(pushevents_ymd_total$month)
+pushevents_ymd_total$daynum = as.numeric(pushevents_ymd_total$day)
+pushevents_ymd_total$monthday = pushevents_ymd_total$monthnum*10+pushevents_ymd_total$daynum
+
+png('github_bigquery_pushevents_total_ymd.png')
+ggplot(subset(pushevents_ymd_total,year=2013), aes(monthday,pushes_by_lang,group=month,colour=monthabb)) + 
+  geom_point() +
+  geom_line() +
+  facet_grid(year ~ .) +
+  xlab("Day of Week") +
+  ylab("Total") + 
+  ggtitle("Total Push Events by Year-Month-Day of Week") +
+  scale_y_continuous(labels=comma) +
+  scale_x_continuous(breaks=c(11:17,21:27,31:37,41:47,51:57,61:67,71:77,81:87,91:97,101:107,111:117,121:127),
+                     labels=c("S","M","T","W","T","F","S",
+                              "S","M","T","W","T","F","S",
+                              "S","M","T","W","T","F","S",
+                              "S","M","T","W","T","F","S",
+                              "S","M","T","W","T","F","S",
+                              "S","M","T","W","T","F","S",
+                              "S","M","T","W","T","F","S",
+                              "S","M","T","W","T","F","S",
+                              "S","M","T","W","T","F","S",
+                              "S","M","T","W","T","F","S",
+                              "S","M","T","W","T","F","S",
+                              "S","M","T","W","T","F","S")) + 
+  scale_colour_discrete(name="Month", 
+                      breaks=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+dev.off()
+
+tapply(pushevents_ymd_total$pushes_by_lang, pushevents_ymd_total$day, summary)
+fit <- lm(pushes_by_lang ~ as.factor(day), data=pushevents_ymd_total)
+summary(fit)
+coefficients(fit)
+
 # graph total counts by year-month
   # shows growth over time, not necessarily "hot" months
   # jump in Sep-Oct ~ school start?
@@ -78,7 +114,7 @@ ggplot(pushevents_yd_total, aes(as.numeric(day),pushes_by_lang,group=as.characte
   ylab("Total") + 
   ggtitle("Total Push Events by Year-Day of Week") +
   scale_y_continuous(labels=comma) + 
-  scale_x_continuous(breaks=1:7,
+  scale_x_discrete(breaks=1:7,
                      labels=c("Sun","Mon","Tues","Wed","Thu","Fri","Sat")) + 
   scale_colour_discrete(name="Year")
 dev.off()
@@ -89,9 +125,21 @@ limits <- aes(ymax=max,ymin=min)
 ggplot(pushevents_stats, aes(day,avg)) + 
   geom_point() +
   xlab("Day of Week") +
+  ylab("Average") + 
+  ggtitle("Average Daily Push Events by Day of Week") +
+  scale_y_continuous(labels=comma) + 
+  scale_x_discrete(breaks=1:7,
+                     labels=c("Sun","Mon","Tues","Wed","Thu","Fri","Sat")) + 
+  scale_colour_discrete(name="Year") 
+
+# graph random sample
+ggplot(pushevents_random_sample, aes(as.factor(day),pushes,fill=as.factor(day))) +
+  geom_boxplot() +
+  xlab("Day of Week") +
   ylab("Total") + 
   ggtitle("Average Daily Push Events by Day of Week") +
   scale_y_continuous(labels=comma) + 
-  scale_x_continuous(breaks=1:7,
-                     labels=c("Sun","Mon","Tues","Wed","Thu","Fri","Sat")) + 
-  scale_colour_discrete(name="Year") 
+  scale_x_discrete(breaks=1:7,
+                   labels=c("Sun","Mon","Tues","Wed","Thu","Fri","Sat")) + 
+  scale_fill_discrete(name="Day of Week",
+                      labels=c("Sun","Mon","Tues","Wed","Thu","Fri","Sat"))  

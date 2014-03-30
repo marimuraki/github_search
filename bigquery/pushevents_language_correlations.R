@@ -57,14 +57,18 @@ colnames(query_top25langs_wide) <- colnames_removing_prefix(query_top25langs_wid
 
 # correlation matrix
 png('github_bigquery_pushevents_language_correlations.png')
-correlations <- cor(query_top25langs_wide)
+correlations <- cor(query_top25langs_wide, method=c("spearman"))
 levelplot(correlations, 
-          at=seq(-1,1,.1), 
+          at=seq(-1,1,.02), 
           scales=list(x=list(rot=90)), 
           main="Correlation Matrix of\nTop 25 GitHub Languages")
 dev.off()
 
-# dissimilarity
+# dissimilarity & hierachichal clustering
 dissimilarity <- 1-correlations
 distance      <- as.dist(dissimilarity)
-plot(hclust(distance))
+png('github_bigquery_pushevents_language_clusters.png')
+plot(hclust(distance), 
+     ylab="Dissimilarity Distance",
+     main="Hierachical Clustering of\nTop 25 Github Languages")
+dev.off()

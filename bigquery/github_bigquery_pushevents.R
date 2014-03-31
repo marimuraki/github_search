@@ -27,7 +27,7 @@ ggplot(pushevents_ymd_total,
   geom_point() +
   geom_line() +
   facet_grid(year ~ .) +
-  xlab("Day of Week") +
+  xlab("\nDay of Week") +
   ylab("Total") + 
   ggtitle("Total Push Events by Year-Month-Day of Week") +
   scale_y_continuous(labels=comma) + 
@@ -43,23 +43,23 @@ ggplot(pushevents_ymd_total,
   geom_point() +
   geom_line() +
   facet_grid(year ~ .) +
-  xlab("Day of Week") +
+  xlab("\nDay of Week") +
   ylab("Total") + 
   ggtitle("Total Push Events by Year-Month-Day of Week") +
   scale_y_continuous(labels=comma) +
   scale_x_continuous(breaks=c(11:17,21:27,31:37,41:47,51:57,61:67,71:77,81:87,91:97,101:107,111:117,121:127),
-                     labels=c("S","M","T","W","T","F","S",
-                              "S","M","T","W","T","F","S",
-                              "S","M","T","W","T","F","S",
-                              "S","M","T","W","T","F","S",
-                              "S","M","T","W","T","F","S",
-                              "S","M","T","W","T","F","S",
-                              "S","M","T","W","T","F","S",
-                              "S","M","T","W","T","F","S",
-                              "S","M","T","W","T","F","S",
-                              "S","M","T","W","T","F","S",
-                              "S","M","T","W","T","F","S",
-                              "S","M","T","W","T","F","S")) + 
+                     labels=c("Su","","","","","","Sa",
+                              "Su","","","","","","Sa",
+                              "Su","","","","","","Sa",
+                              "Su","","","","","","Sa",
+                              "Su","","","","","","Sa",
+                              "Su","","","","","","Sa",
+                              "Su","","","","","","Sa",
+                              "Su","","","","","","Sa",
+                              "Su","","","","","","Sa",
+                              "Su","","","","","","Sa",
+                              "Su","","","","","","Sa",
+                              "Su","","","","","","Sa")) + 
   scale_colour_discrete(name="Month", 
                         breaks=(1:12),
                         labels=c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
@@ -92,8 +92,9 @@ ggplot(subset(pushevents_ymd_total, year==2013),
                         labels=c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
 dev.off()
 
-tapply(pushevents_ymd_total$pushes_by_lang, pushevents_ymd_total$day, summary)
-fit <- lm(pushes_by_lang ~ as.factor(day), data=pushevents_ymd_total)
+pushevents_ymd_total2013 <- subset(pushevents_ymd_total, year=2013)
+tapply(pushevents_ymd_total2013$pushes_by_lang, pushevents_ymd_total2013$day, summary)
+fit <- lm(pushes_by_lang ~ as.factor(day), data=pushevents_ymd_total2013)
 summary(fit)
 coefficients(fit)
 
@@ -114,8 +115,8 @@ ggplot(pushevents_yd_total,
        aes(day, pushes_by_lang, group=year, colour=year)) + 
   geom_point() +
   geom_line() +
-  xlab("Day of Week") +
-  ylab("Total") + 
+  xlab("\nDay of Week") +
+  ylab("Total\n") + 
   ggtitle("Total Push Events by Year-Day of Week") +
   scale_y_continuous(labels=comma) + 
   scale_x_discrete(breaks=1:7,

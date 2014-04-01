@@ -43,7 +43,7 @@ query_top25langs_wide <- query_top25langs_wide[c(-1)]
 
 # remove column names
 colnames_removing_prefix <- function(df, prefix) {
-  names <- colnames(df)
+  names   <- colnames(df)
   indices <- (substr(names, 1, nchar(prefix))==prefix)
   names[indices] <- substr(names[indices], nchar(prefix)+1, nchar(names[indices]))
   return(names)
@@ -75,7 +75,7 @@ corrhighonly[!1:l %in% corrhigh] <- NA
 corrhighonly
 
 # dissimilarity & hierachichal clustering
-dissimilarity <- 1-abs(correlations)
+dissimilarity <- 1-correlations
 distance      <- as.dist(dissimilarity)
 png('github_bigquery_pushevents_language_clusters.png')
 plot(hclust(distance), 
